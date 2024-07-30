@@ -382,6 +382,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
       if ((DEBUG_PASS != -1 && numPasses > DEBUG_PASS) || (numPasses > maxPasses)) {
         break;
       }
+      System.out.println("PASS " + numPasses);
       if (DEBUG) {
         logger.debug("PASS " + numPasses);
         logger.debug("" + fieldCheckHeuristic);
@@ -395,6 +396,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
         logger.debug(e.getMessage(), e);
       }
       if (!fieldCheckHeuristic.runNewPass()) {
+        System.out.println("Exit at runNewPass()");
         break;
       }
     }

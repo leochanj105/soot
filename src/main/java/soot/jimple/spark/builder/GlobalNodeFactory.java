@@ -130,6 +130,8 @@ public class GlobalNodeFactory {
       AllocNode site = pag.makeAllocNode(new Pair<VarNode, SootClass>(cls, cl), cl.getType(), null);
       pag.addEdge(site, local);
     }
+    // AllocNode site = pag.makeAllocNode(cls, AnySubType.v(RefType.v("java.lang.Object")), null);
+    // pag.addEdge(site, local);
     return local;
   }
 
