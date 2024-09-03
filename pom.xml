@@ -688,16 +688,33 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <!-- <plugin> -->
+                    <!--     <groupId>org.apache.maven.plugins</groupId> -->
+                    <!--     <artifactId>maven-assembly-plugin</artifactId> -->
+                    <!--     <executions> -->
+                    <!--         <execution> -->
+                    <!--             <id>simple-command</id> -->
+                    <!--             <phase>package</phase> -->
+                    <!--             <goals> -->
+                    <!--                 <goal>single</goal> -->
+                    <!--             </goals> -->
+                    <!--         </execution> -->
+                    <!--     </executions> -->
+                    <!-- </plugin> -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-assembly-plugin</artifactId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>3.6.0</version>
                         <executions>
                             <execution>
-                                <id>simple-command</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>single</goal>
+                                    <goal>shade</goal>
                                 </goals>
+                                <configuration>
+                                    <artifactSet>
+                                    </artifactSet>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

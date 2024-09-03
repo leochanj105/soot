@@ -393,6 +393,8 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
         refineP2Set(new VarAndContext(v, EMPTY_CALLSTACK), null);
         contextSensitiveResult = pointsTo;
       } catch (TerminateEarlyException e) {
+        System.out.println(e.getMessage()+"\n");
+        e.printStackTrace();
         logger.debug(e.getMessage(), e);
       }
       if (!fieldCheckHeuristic.runNewPass()) {
