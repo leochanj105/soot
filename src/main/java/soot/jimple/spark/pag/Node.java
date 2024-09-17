@@ -140,7 +140,7 @@ public class Node implements ReferenceVariable, Numberable {
   /* End of public methods. */
 
   /** Creates a new node of pointer assignment graph pag, with type type. */
-  Node(PAG pag, Type type) {
+  public Node(PAG pag, Type type) {
     if (TypeManager.isUnresolved(type) && !Options.v().ignore_resolution_errors()) {
       throw new RuntimeException("Unresolved type " + type);
     }
