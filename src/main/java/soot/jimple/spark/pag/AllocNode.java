@@ -68,7 +68,7 @@ public class AllocNode extends Node implements Context {
 
   /* End of public methods. */
 
-  AllocNode(PAG pag, Object newExpr, Type t, SootMethod m) {
+  public AllocNode(PAG pag, Object newExpr, Type t, SootMethod m) {
     super(pag, t);
     this.method = m;
     if (t instanceof RefType) {
@@ -84,7 +84,9 @@ public class AllocNode extends Node implements Context {
     if (newExpr instanceof ContextVarNode) {
       throw new RuntimeException();
     }
-    pag.getAllocNodeNumberer().add(this);
+    if(pag != null){
+      pag.getAllocNodeNumberer().add(this);
+    }
   }
 
   /** Registers a AllocDotField as having this node as its base. */

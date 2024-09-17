@@ -1540,15 +1540,15 @@ public class PAG implements PointsToAnalysis {
 
   private boolean runGeomPTA = false;
   protected MultiMap<Pair<Node, Node>, Edge> assign2edges = new HashMultiMap<>();
-  private final Map<Object, LocalVarNode> valToLocalVarNode = new HashMap<>(1000);
-  private final Map<Object, GlobalVarNode> valToGlobalVarNode = new HashMap<>(1000);
-  private final Map<Object, AllocNode> valToAllocNode = new HashMap<>(1000);
-  private final Table<Object, Type, AllocNode> valToReflAllocNode = HashBasedTable.create();
+  public final Map<Object, LocalVarNode> valToLocalVarNode = new HashMap<>(1000);
+  public final Map<Object, GlobalVarNode> valToGlobalVarNode = new HashMap<>(1000);
+  public final Map<Object, AllocNode> valToAllocNode = new HashMap<>(1000);
+  public final Table<Object, Type, AllocNode> valToReflAllocNode = HashBasedTable.create();
   private OnFlyCallGraph ofcg;
   private final ArrayList<VarNode> dereferences = new ArrayList<VarNode>();
   protected TypeManager typeManager;
-  protected Map<Local, LocalVarNode> localToNodeMap = new HashMap<>();
-  private final Map<Value, NewInstanceNode> newInstToNodeMap = new HashMap<>();
+  public Map<Local, LocalVarNode> localToNodeMap = new HashMap<>();
+  public final Map<Value, NewInstanceNode> newInstToNodeMap = new HashMap<>();
   public int maxFinishNumber = 0;
   private Map<Node, Tag> nodeToTag;
   private final GlobalNodeFactory nodeFactory = new GlobalNodeFactory(this);

@@ -135,8 +135,10 @@ public abstract class VarNode extends ValNode implements Comparable {
       throw new RuntimeException("Attempt to create VarNode of type " + t);
     }
     this.variable = variable;
-    pag.getVarNodeNumberer().add(this);
-    setFinishingNumber(++pag.maxFinishNumber);
+    if(pag != null){
+      pag.getVarNodeNumberer().add(this);
+      setFinishingNumber(++pag.maxFinishNumber);
+    }
   }
 
   /** Registers a frn as having this node as its base. */
