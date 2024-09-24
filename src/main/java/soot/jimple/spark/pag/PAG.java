@@ -960,6 +960,8 @@ public class PAG implements PointsToAnalysis {
   public boolean addEdge(Node from, Node to) {
     from = from.getReplacement();
     to = to.getReplacement();
+    Pair<Node, Node> val = new Pair<Node, Node>(from, to);
+    allEdges.add(val);
     if (from instanceof VarNode) {
       if (to instanceof VarNode) {
         return addSimpleEdge((VarNode) from, (VarNode) to);
@@ -980,7 +982,7 @@ public class PAG implements PointsToAnalysis {
     }
   }
 
-  protected ChunkedQueue<Node> edgeQueue = new ChunkedQueue<Node>();
+  public ChunkedQueue<Node> edgeQueue = new ChunkedQueue<Node>();
 
   public QueueReader<Node> edgeReader() {
     return edgeQueue.reader();
@@ -1507,19 +1509,19 @@ public class PAG implements PointsToAnalysis {
   protected CGOptions cgOpts;
   protected ClientAccessibilityOracle accessibilityOracle = Scene.v().getClientAccessibilityOracle();
 
-  protected Map<VarNode, Object> simple = new HashMap<VarNode, Object>();
-  protected Map<FieldRefNode, Object> load = new HashMap<FieldRefNode, Object>();
-  protected Map<VarNode, Object> store = new HashMap<VarNode, Object>();
-  protected Map<AllocNode, Object> alloc = new HashMap<AllocNode, Object>();
-  protected Map<VarNode, Object> newInstance = new HashMap<VarNode, Object>();
-  protected Map<NewInstanceNode, Object> assignInstance = new HashMap<NewInstanceNode, Object>();
+  public Map<VarNode, Object> simple = new HashMap<VarNode, Object>();
+  public Map<FieldRefNode, Object> load = new HashMap<FieldRefNode, Object>();
+  public Map<VarNode, Object> store = new HashMap<VarNode, Object>();
+  public Map<AllocNode, Object> alloc = new HashMap<AllocNode, Object>();
+  public Map<VarNode, Object> newInstance = new HashMap<VarNode, Object>();
+  public Map<NewInstanceNode, Object> assignInstance = new HashMap<NewInstanceNode, Object>();
 
-  protected Map<VarNode, Object> simpleInv = new HashMap<VarNode, Object>();
-  protected Map<VarNode, Object> loadInv = new HashMap<VarNode, Object>();
-  protected Map<FieldRefNode, Object> storeInv = new HashMap<FieldRefNode, Object>();
-  protected Map<VarNode, Object> allocInv = new HashMap<VarNode, Object>();
-  protected Map<NewInstanceNode, Object> newInstanceInv = new HashMap<NewInstanceNode, Object>();
-  protected Map<VarNode, Object> assignInstanceInv = new HashMap<VarNode, Object>();
+  public Map<VarNode, Object> simpleInv = new HashMap<VarNode, Object>();
+  public Map<VarNode, Object> loadInv = new HashMap<VarNode, Object>();
+  public Map<FieldRefNode, Object> storeInv = new HashMap<FieldRefNode, Object>();
+  public Map<VarNode, Object> allocInv = new HashMap<VarNode, Object>();
+  public Map<NewInstanceNode, Object> newInstanceInv = new HashMap<NewInstanceNode, Object>();
+  public Map<VarNode, Object> assignInstanceInv = new HashMap<VarNode, Object>();
 
   protected <K extends Node> boolean addToMap(Map<K, Object> m, K key, Node value) {
     Object valueList = m.get(key);
@@ -1539,18 +1541,18 @@ public class PAG implements PointsToAnalysis {
   }
 
   private boolean runGeomPTA = false;
-  protected MultiMap<Pair<Node, Node>, Edge> assign2edges = new HashMultiMap<>();
+  public MultiMap<Pair<Node, Node>, Edge> assign2edges = new HashMultiMap<>();
   public final Map<Object, LocalVarNode> valToLocalVarNode = new HashMap<>(1000);
   public final Map<Object, GlobalVarNode> valToGlobalVarNode = new HashMap<>(1000);
   public final Map<Object, AllocNode> valToAllocNode = new HashMap<>(1000);
   public final Table<Object, Type, AllocNode> valToReflAllocNode = HashBasedTable.create();
   private OnFlyCallGraph ofcg;
-  private final ArrayList<VarNode> dereferences = new ArrayList<VarNode>();
+  public final ArrayList<VarNode> dereferences = new ArrayList<VarNode>();
   protected TypeManager typeManager;
   public Map<Local, LocalVarNode> localToNodeMap = new HashMap<>();
   public final Map<Value, NewInstanceNode> newInstToNodeMap = new HashMap<>();
   public int maxFinishNumber = 0;
-  private Map<Node, Tag> nodeToTag;
+  public Map<Node, Tag> nodeToTag;
   private final GlobalNodeFactory nodeFactory = new GlobalNodeFactory(this);
 
   public GlobalNodeFactory nodeFactory() {
@@ -1562,5 +1564,7 @@ public class PAG implements PointsToAnalysis {
   public HashMultiMap<InvokeExpr, Pair<Node, Node>> callAssigns;
   public Map<InvokeExpr, SootMethod> callToMethod;
   public Map<InvokeExpr, Node> virtualCallsToReceivers;
+
+  public List<Pair<Node, Node>> allEdges = new ArrayList<>();
 
 }
