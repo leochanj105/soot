@@ -307,6 +307,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
       return mightThrow(sm);
     } else {
       return mgr.ALL_THROWABLES;
+      // return mgr.EMPTY;
     }
   }
 
@@ -320,12 +321,15 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
    */
   public ThrowableSet mightThrow(SootMethod sm) {
     if (!isInterproc) {
+      // if(sm.toString().contains("getBlockPoolId")){      
+      //   System.out.println("!!! " + sm + "\n" + this);
+      // }
       return ThrowableSet.Manager.v().ALL_THROWABLES;
     }
     return methodToThrowSet.getUnchecked(sm);
   }
 
-  protected final LoadingCache<SootMethod, ThrowableSet> methodToThrowSet
+  public final LoadingCache<SootMethod, ThrowableSet> methodToThrowSet
       = IDESolver.DEFAULT_CACHE_BUILDER.build(new CacheLoader<SootMethod, ThrowableSet>() {
         @Override
         public ThrowableSet load(SootMethod sm) throws Exception {
@@ -343,7 +347,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
    *
    * @return a representation of the set of {@link java.lang.Throwable Throwable} types that <code>m</code> might throw.
    */
-  private ThrowableSet mightThrow(SootMethod sm, Set<SootMethod> doneSet) {
+  public ThrowableSet mightThrow(SootMethod sm, Set<SootMethod> doneSet) {
     // Do not run in loops
     if (!doneSet.add(sm)) {
       return ThrowableSet.Manager.v().EMPTY;
@@ -361,20 +365,20 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
     // We need a mapping between unit and exception
     final PatchingChain<Unit> units = sm.getActiveBody().getUnits();
-    Map<Unit, Collection<Trap>> unitToTraps
-        = sm.getActiveBody().getTraps().isEmpty() ? null : new HashMap<Unit, Collection<Trap>>();
-    for (Trap t : sm.getActiveBody().getTraps()) {
-      for (Iterator<Unit> unitIt = units.iterator(t.getBeginUnit(), units.getPredOf(t.getEndUnit())); unitIt.hasNext();) {
-        Unit unit = unitIt.next();
+    Map<Unit, Collection<Trap>> unitToTraps = getUnitToTraps(sm, units);
+        // = sm.getActiveBody().getTraps().isEmpty() ? null : new HashMap<Unit, Collection<Trap>>();
+    // for (Trap t : sm.getActiveBody().getTraps()) {
+      // for (Iterator<Unit> unitIt = units.iterator(t.getBeginUnit(), units.getPredOf(t.getEndUnit())); unitIt.hasNext();) {
+        // Unit unit = unitIt.next();
 
-        Collection<Trap> unitsForTrap = unitToTraps.get(unit);
-        if (unitsForTrap == null) {
-          unitsForTrap = new ArrayList<Trap>();
-          unitToTraps.put(unit, unitsForTrap);
-        }
-        unitsForTrap.add(t);
-      }
-    }
+        // Collection<Trap> unitsForTrap = unitToTraps.get(unit);
+        // if (unitsForTrap == null) {
+        //   unitsForTrap = new ArrayList<Trap>();
+        //   unitToTraps.put(unit, unitsForTrap);
+        // }
+        // unitsForTrap.add(t);
+      // }
+    // }
 
     ThrowableSet methodSet = ThrowableSet.Manager.v().EMPTY;
     if (sm.hasActiveBody()) {
@@ -391,7 +395,9 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
           } else {
             curStmtSet = mightThrow(u, sm);
           }
-
+        // if(sm.getName().equals("checkBlock")){
+        //   System.out.println(sm+"\n"+ u +"\nbefore: " + curStmtSet);
+        // }
           // The exception might be caught along the way
           if (unitToTraps != null) {
             Collection<Trap> trapsForUnit = unitToTraps.get(stmt);
@@ -403,12 +409,34 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
             }
           }
 
+        // if((sm.getName().equals("checkBlock") || sm.getName().equals("getBlockPoolId")) && this.isInterproc ){
+        //   System.out.println(u + "\n" + curStmtSet);
+        // }
           methodSet = methodSet.add(curStmtSet);
         }
       }
     }
-
     return methodSet;
+  }
+
+  public static Map<Unit, Collection<Trap>> getUnitToTraps(SootMethod sm, PatchingChain<Unit> units) {
+
+    Map<Unit, Collection<Trap>> unitToTraps = sm.getActiveBody().getTraps().isEmpty() ? null
+        : new HashMap<Unit, Collection<Trap>>();
+    for (Trap t : sm.getActiveBody().getTraps()) {
+      for (Iterator<Unit> unitIt = units.iterator(t.getBeginUnit(), units.getPredOf(t.getEndUnit())); unitIt
+          .hasNext();) {
+        Unit unit = unitIt.next();
+
+        Collection<Trap> unitsForTrap = unitToTraps.get(unit);
+        if (unitsForTrap == null) {
+          unitsForTrap = new ArrayList<Trap>();
+          unitToTraps.put(unit, unitsForTrap);
+        }
+        unitsForTrap.add(t);
+      }
+    }
+    return unitToTraps;
   }
 
   private static final IntConstant INT_CONSTANT_ZERO = IntConstant.v(0);
@@ -1179,11 +1207,17 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     private void caseInstanceInvokeExpr(InstanceInvokeExpr expr) {
       result = result.add(mgr.RESOLVE_METHOD_ERRORS);
       result = result.add(mgr.NULL_POINTER_EXCEPTION);
+
+      
       for (int i = 0; i < expr.getArgCount(); i++) {
         result = result.add(mightThrow(expr.getArg(i)));
       }
+
+     
       result = result.add(mightThrow(expr.getBase()));
-      result = result.add(mightThrow(expr.getMethodRef()));
+
+          result = result.add(mightThrow(expr.getMethodRef()));
+
     }
   }
 }
